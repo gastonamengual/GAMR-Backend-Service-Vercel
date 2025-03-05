@@ -99,7 +99,22 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
 
     steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.12.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12.9
+
+    - name: Install pipenv
+      run: pip install pipenv
+
+    - name: Install dependencies
+      run: pipenv install --dev
+      env:
+        PIPENV_VENV_IN_PROJECT: 1
+
     - name: Trigger Render Deployment
       env:
         RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-      run: python gamr_backend_api_service/deployment/render/render_deployment.py
+      run: python render_deployment.py

@@ -32,8 +32,10 @@ class RenderDeployment:
         return response
 
 
-def trigger_render_deployment():
-    render_deployment = RenderDeployment()
-    response = render_deployment.get_service_id()
-    service_id = response.json()[0]["service"]["id"]
-    render_deployment.deploy_service(service_id)
+render_deployment = RenderDeployment()
+response = render_deployment.get_service_id()
+service_id = response.json()[0]["service"]["id"]
+print(f"Retrieved service with id: {service_id}")
+response = render_deployment.deploy_service(service_id)
+if response.ok:
+    print("Render deployment triggered successfully")
