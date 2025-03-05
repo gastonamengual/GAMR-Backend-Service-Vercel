@@ -14,7 +14,7 @@ async def root():
 
 
 @router.post("/token")
-async def token(user: User):
+async def token(user: User) -> dict[str, str]:
     token_generator = TokenGenerator()
     _token = token_generator.get_token(user)
     return {"token": _token, "type": "BEARER"}
