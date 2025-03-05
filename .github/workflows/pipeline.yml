@@ -60,7 +60,7 @@ jobs:
         files: |
           pytest-report.xml
 
-  deploy:
+  deploy_pypi:
     needs: build
     runs-on: ubuntu-latest
 
@@ -91,3 +91,15 @@ jobs:
 
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
+
+  deploy_render:
+    needs: deploy_pypi
+    runs-on: ubuntu-latest
+
+    if: ${{ github.ref == 'refs/heads/main' }}
+
+    steps:
+    - name: Trigger Render Deployment
+      env:
+        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      run: python gamr_backend_api_service/deployment/render/render_deployment.py
