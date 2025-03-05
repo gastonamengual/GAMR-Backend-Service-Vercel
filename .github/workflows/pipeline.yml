@@ -116,5 +116,11 @@ jobs:
 
     - name: Trigger Render Deployment
       env:
-        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-      run: pipenv run python render_deployment.py
+        PROJECT_ID: ${{ secrets.PROJECT_ID }}
+        PRIVATE_KEY_ID: ${{ secrets.PRIVATE_KEY_ID }}
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        RENDER_API_TOKEN: ${{ secrets.RENDER_API_TOKEN }}
+      run: |
+        pipenv run python render_deployment.py
