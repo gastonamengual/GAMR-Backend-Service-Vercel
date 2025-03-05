@@ -10,8 +10,93 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  deploy_render:
+  build:
     runs-on: ubuntu-latest
+
+    permissions:
+      checks: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.12.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12.9
+
+    - name: Extract version from __init__.py
+      run: |
+        VERSION=$(grep '__version__' gamr_backend_api_service/__init__.py | sed -E 's/__version__ = \"([^\"]+)\"/\1/')
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Check if version exists on PyPI
+      run: |
+        if pip index versions gamr-backend-api-service | grep -q "$VERSION"; then
+          echo "Version $VERSION already exists on PyPI. Update the version."
+          exit 1
+        fi
+
+    - name: Install pipenv
+      run: pip install pipenv
+
+    - name: Linter and style check
+      run: |
+        pip install pre-commit==4.1.0
+        pre-commit run --all-file
+
+    - name: Install dependencies
+      run: pipenv install --dev
+      env:
+        PIPENV_VENV_IN_PROJECT: 1
+
+    - name: Test with pytest
+      run: pipenv run test
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      if: always()
+      with:
+        files: |
+          pytest-report.xml
+
+  deploy_pypi:
+    needs: build
+    runs-on: ubuntu-latest
+
+    if: ${{ github.ref == 'refs/heads/main' }}
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.12.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12.9
+
+    - name: Install pipenv
+      run: pip install pipenv
+
+    - name: Install dependencies
+      run: pipenv install --dev
+      env:
+        PIPENV_VENV_IN_PROJECT: 1
+
+    - name: Build
+      run: pipenv run build
+
+    - name: Publish package
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+  deploy_render:
+    needs: deploy_pypi
+    runs-on: ubuntu-latest
+
+    if: ${{ github.ref == 'refs/heads/main' }}
 
     steps:
     - uses: actions/checkout@v4
@@ -38,10 +123,4 @@ jobs:
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
         RENDER_API_TOKEN: ${{ secrets.RENDER_API_TOKEN }}
       run: |
-        echo "PROJECT_ID=${{ secrets.PROJECT_ID }}" >> $GITHUB_ENV
-        echo "PRIVATE_KEY_ID=${{ secrets.PRIVATE_KEY_ID }}" >> $GITHUB_ENV
-        echo "PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}" >> $GITHUB_ENV
-        echo "CLIENT_EMAIL=${{ secrets.CLIENT_EMAIL }}" >> $GITHUB_ENV
-        echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> $GITHUB_ENV
-        echo "RENDER_API_TOKEN=${{ secrets.RENDER_API_TOKEN }}" >> $GITHUB_ENV
         pipenv run python render_deployment.py
