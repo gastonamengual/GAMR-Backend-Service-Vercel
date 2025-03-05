@@ -1,10 +1,10 @@
 FROM python:3.12-slim
 
-ARG PACKAGE_VERSION
+# ARG PACKAGE_VERSION
 
 WORKDIR /app
 
-RUN pip install --upgrade pip && pip install gamr-backend-api-service==${PACKAGE_VERSION}
+RUN pip install --upgrade pip && pip install gamr-backend-api-service
 
 EXPOSE 8080
 
