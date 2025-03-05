@@ -17,5 +17,7 @@ class Settings_(BaseSettings):
     CLIENT_EMAIL: str = Field()
     CLIENT_ID: str = Field()
 
+    RENDER_API_TOKEN: str = Field()
+
 
 Settings = Settings_()

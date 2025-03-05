@@ -10,7 +10,7 @@ from gamr_backend_api_service.auth.exceptions import (
 )
 from gamr_backend_api_service.models.user import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="generate_token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 
 @dataclass

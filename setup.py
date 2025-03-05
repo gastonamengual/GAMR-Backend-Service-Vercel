@@ -24,4 +24,9 @@ setup(
     include_package_data=True,
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
+    entry_points={
+        "console_scripts": [
+            "deploy-render=gamr_backend_api_service.deployment.render_deployment:trigger_render_deployment",
+        ],
+    },
 )
