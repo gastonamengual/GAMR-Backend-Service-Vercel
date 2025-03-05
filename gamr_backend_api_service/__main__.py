@@ -1,3 +1,4 @@
+import os
 import uvicorn
 
 from gamr_backend_api_service.api import create_app
@@ -9,7 +10,7 @@ if __name__ == "__main__":
         "gamr_backend_api_service.api:create_app",
         factory=True,
         host="0.0.0.0",
-        port=8080,
+        port=int(os.getenv("PORT", 8080)),
         reload=True,
     )
 
