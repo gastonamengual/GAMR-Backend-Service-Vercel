@@ -2,7 +2,7 @@ import requests  # type: ignore
 from gamr_backend_api_service.settings import Settings
 
 
-def get_service_id():
+def get_service_id() -> requests.Response:
     url = "https://api.render.com/v1/services?includePreviews=true&limit=20"
 
     headers = {
@@ -14,7 +14,7 @@ def get_service_id():
     return response
 
 
-def deploy_service(service_id: str):
+def deploy_service(service_id: str) -> requests.Response:
     url = f"https://api.render.com/v1/services/{service_id}/deploys"
 
     payload = {"clearCache": "do_not_clear"}
