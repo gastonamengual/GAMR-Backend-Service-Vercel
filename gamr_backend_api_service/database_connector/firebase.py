@@ -8,7 +8,7 @@ from gamr_backend_api_service.settings import Settings
 
 
 def get_credentials() -> dict[str, str]:
-    CREDENTIALS_DICT = {
+    return {
         "type": "service_account",
         "project_id": Settings.PROJECT_ID,
         "private_key": Settings.PRIVATE_KEY,
@@ -21,28 +21,27 @@ def get_credentials() -> dict[str, str]:
         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40imagerecognitionapp-15216.iam.gserviceaccount.com",
         "universe_domain": "googleapis.com",
     }
-    return CREDENTIALS_DICT
 
 
 @dataclass
 class FirestoreConnector:
-    def __post_init__(self):
-        if not firebase_admin._apps:
+    def __post_init__(self) -> None:
+        try:
+            firebase_admin.get_app()
+        except ValueError:
             credentials = get_credentials()
             cred = firebase_admin.credentials.Certificate(credentials)
             firebase_admin.initialize_app(cred)
 
     @property
-    def _db(self):
+    def _db(self) -> firestore.client:
         return firestore.client()
 
-    def add_user(self, username):
+    def add_user(self, username: str) -> None:
         doc_ref = self._db.collection("users").document()
-        doc_ref.set(
-            {
-                "username": username,
-            }
-        )
+        doc_ref.set({
+            "username": username,
+        })
 
     def get_all_users(self) -> list[User]:
         users = []

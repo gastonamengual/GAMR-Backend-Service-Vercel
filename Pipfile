@@ -16,14 +16,13 @@ pydantic_settings = "*"
 [dev-packages]
 pytest = "==8.3.4"
 pytest-cov = "==6.0.0"
-flake8 = "==7.1.2"
-black = "==25.1.0"
 pre-commit = "==4.1.0"
 ipykernel = "*"
 pillow = "==11.1.0"
 dparse = "==0.6.3"
 twine = "==6.1.0"
 setuptools = "==75.8.2"
+freezegun = "==1.5.1"
 
 [requires]
 python_version = "3.12.9"

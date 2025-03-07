@@ -1,8 +1,9 @@
-import requests  # type: ignore
+import requests
+
 from gamr_backend_api_service.settings import Settings
 
 
-def get_service_id() -> requests.Response:
+def get_service_id() -> str:
     url = "https://api.render.com/v1/services?includePreviews=true&limit=20"
 
     headers = {
@@ -11,10 +12,11 @@ def get_service_id() -> requests.Response:
     }
 
     response = requests.get(url, headers=headers)
-    return response
+    response_id: str = response.json()[0]["service"]["id"]
+    return response_id
 
 
-def deploy_service(service_id: str) -> requests.Response:
+def deploy_service(service_id: str) -> None:
     url = f"https://api.render.com/v1/services/{service_id}/deploys"
 
     payload = {"clearCache": "do_not_clear"}
@@ -25,13 +27,10 @@ def deploy_service(service_id: str) -> requests.Response:
     }
 
     response = requests.post(url, json=payload, headers=headers)
+    if response.ok:
+        pass
 
-    return response
 
-
-response = get_service_id()
-service_id = response.json()[0]["service"]["id"]
-print(f"Retrieved service with id: {service_id}")
-response = deploy_service(service_id)
-if response.ok:
-    print("Render deployment triggered successfully")
+if __name__ == "__main__":
+    service_id = get_service_id()
+    deploy_service(service_id)

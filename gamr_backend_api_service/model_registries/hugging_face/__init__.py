@@ -1,4 +1,4 @@
 from .errors import HuggingFaceException
-from .service import HuggingFaceInterface
+from .hf_model_registry import HuggingFaceInterface
 
 __all__ = ["HuggingFaceException", "HuggingFaceInterface"]

@@ -11,13 +11,13 @@ class Settings_(BaseSettings):
         extra="ignore",
     )
 
-    PROJECT_ID: str = Field()
-    PRIVATE_KEY_ID: str = Field()
-    PRIVATE_KEY: str = Field()
-    CLIENT_EMAIL: str = Field()
-    CLIENT_ID: str = Field()
+    PROJECT_ID: str = Field(default="")
+    PRIVATE_KEY_ID: str = Field(default="")
+    PRIVATE_KEY: str = Field(default="")
+    CLIENT_EMAIL: str = Field(default="")
+    CLIENT_ID: str = Field(default="")
 
-    RENDER_API_TOKEN: str = Field()
+    RENDER_API_TOKEN: str = Field(default="")
 
 
 Settings = Settings_()

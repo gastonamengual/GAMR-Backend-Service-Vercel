@@ -1,5 +1,3 @@
-jupyter-book-template
-
 # Byte-compiled / optimized / DLL files
 */.DS_Store
 */__pycache__
@@ -159,3 +157,5 @@ prof/*
 .intentguard/IntentGuard-1.Q8_0.gguf
 .intentguard/llamafile.exe
 s
+.DS_Store
+pytest-report.xml
