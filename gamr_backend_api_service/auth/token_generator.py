@@ -9,6 +9,7 @@ from gamr_backend_api_service.auth.exceptions import (
     TokenNotDecoded,
 )
 from gamr_backend_api_service.models.user import User
+from gamr_backend_api_service.settings import Settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
@@ -16,8 +17,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 @dataclass
 class TokenGenerator:
     expiration_minutes: timedelta = timedelta(minutes=30)
-    key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-    algorithm: str = "HS256"
+    key: str = Settings.JWT_KEY
+    algorithm: str = Settings.JWT_ALGORITHM
 
     @property
     def expire_data(self) -> datetime:

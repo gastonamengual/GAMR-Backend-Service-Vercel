@@ -19,5 +19,8 @@ class Settings_(BaseSettings):
 
     RENDER_API_TOKEN: str = Field(default="")
 
+    JWT_KEY: str = Field(default="")
+    JWT_ALGORITHM: str = Field(default="")
+
 
 Settings = Settings_()

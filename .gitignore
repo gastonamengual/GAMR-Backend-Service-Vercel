@@ -159,3 +159,4 @@ prof/*
 s
 .DS_Store
 pytest-report.xml
+tests/integration-test.ipynb
