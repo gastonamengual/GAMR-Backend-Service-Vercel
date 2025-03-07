@@ -5,7 +5,7 @@ from gamr_backend_api_service.api.routes import ERROR_TO_HANDLER_MAPPING
 from gamr_backend_api_service.api.routes.base import router
 
 
-def create_app():
+def create_app() -> FastAPI:
     app = FastAPI()
     app.add_middleware(
         CORSMiddleware,
@@ -16,6 +16,6 @@ def create_app():
     app.include_router(router)
 
     for error_exception, error_handler in ERROR_TO_HANDLER_MAPPING:
-        app.add_exception_handler(error_exception, error_handler)
+        app.add_exception_handler(error_exception, error_handler)  # type: ignore
 
     return app

@@ -1,13 +1,5 @@
-from pydantic import BaseModel, model_validator
-
-from gamr_backend_api_service.models.errors import UserBlank
+from pydantic import BaseModel, Field
 
 
 class User(BaseModel):
-    username: str
-
-    @model_validator(mode="after")
-    def username_not_blank(self):
-        if not self.username:
-            raise UserBlank
-        return self
+    username: str = Field(min_length=1)

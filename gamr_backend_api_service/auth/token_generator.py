@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 import jwt
 from fastapi import Depends
@@ -16,17 +16,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 @dataclass
 class TokenGenerator:
     expiration_minutes: timedelta = timedelta(minutes=30)
-    key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"  # TODO save secret
-    algorithm: str = "HS256"  # TODO save secret
+    key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    algorithm: str = "HS256"
 
     @property
-    def expire_data(self):
-        return datetime.now(timezone.utc) + self.expiration_minutes
+    def expire_data(self) -> datetime:
+        return datetime.now() + self.expiration_minutes
 
-    def get_token(self, user: User):
+    def get_token(self, user: User) -> str:
         payload = {"username": user.username, "exp": self.expire_data}
-        token = jwt.encode(payload=payload, key=self.key, algorithm=self.algorithm)
-        return token
+        return jwt.encode(payload=payload, key=self.key, algorithm=self.algorithm)
 
     def get_user_from_token(self, token: str = Depends(oauth2_scheme)) -> User:
         try:
