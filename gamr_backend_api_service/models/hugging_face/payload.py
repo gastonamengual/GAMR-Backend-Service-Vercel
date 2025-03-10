@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field, model_validator
 ALLOWED_EXTENSIONS = [".png", ".jpg", ".jpeg"]
 
 
-class ImageData(BaseModel):
+class ImagePayload(BaseModel):
     filename: str = Field(min_length=1)
     image_bytes: bytes
     model_service: str
