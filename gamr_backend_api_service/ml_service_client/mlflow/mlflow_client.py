@@ -17,21 +17,23 @@ class FlowerClassifier(AbstractMLServiceClient):
         try:
             url = f"{self.model_api_url}/model/{payload.model_name}/{payload.model_version}/predict"  # noqa: E501
             response = requests.post(url, json=payload.data.model_dump())
-            payload.data.y = [response.json()["prediction"]]
-            return payload  # noqa: TRY300
 
         except Exception as ex:
             raise MLFlowException(message=f"MLFLow API Error: {ex}") from ex
+
+        payload.data.y = [response.json()["prediction"]]
+        return payload
 
     def train(self, payload: FlowerPayload) -> FlowerPayload:
         try:
             url = f"{self.model_api_url}/model/{payload.model_name}/train"
-            response = requests.post(url, json=payload)
-            payload.model_version = response.json()["model_version"]
-            return payload  # noqa: TRY300
+            response = requests.post(url, json=payload.data.model_dump())
 
         except Exception as ex:
             raise MLFlowException(message=f"MLFLow API Error: {ex}") from ex
+
+        payload.model_version = response.json()["model_version"]
+        return payload
 
     def get_models(self) -> Models:
         try:
