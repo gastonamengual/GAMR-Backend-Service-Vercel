@@ -2,9 +2,7 @@ from gamr_backend_api_service.auth.exceptions import (
     TokenNotDecoded,
     UserNotExists,
 )
-from gamr_backend_api_service.model_registries.hugging_face.errors import (
-    HuggingFaceException,
-)
+from gamr_backend_api_service.ml_service_client import HuggingFaceException
 
 from .exception_handlers import (
     hugging_face_api_exception_handler,
