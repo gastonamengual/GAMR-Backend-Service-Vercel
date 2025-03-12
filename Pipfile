@@ -23,6 +23,7 @@ dparse = "==0.6.3"
 twine = "==6.1.0"
 setuptools = "==75.8.2"
 freezegun = "==1.5.1"
+pytest-recording = "==0.13.2"
 
 [requires]
 python_version = "3.12.9"
