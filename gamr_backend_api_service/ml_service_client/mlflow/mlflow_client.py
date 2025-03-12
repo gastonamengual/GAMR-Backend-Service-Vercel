@@ -3,8 +3,7 @@ from dataclasses import dataclass
 import requests
 
 from gamr_backend_api_service.ml_service_client import AbstractMLServiceClient
-from gamr_backend_api_service.models import FlowerPayload
-from gamr_backend_api_service.models.mlflow.payload import Models, Versions
+from gamr_backend_api_service.models.mlflow import FlowerPayload, Models, Versions
 
 from .errors import MLFlowException
 

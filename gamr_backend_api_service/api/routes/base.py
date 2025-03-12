@@ -9,8 +9,9 @@ from gamr_backend_api_service.ml_service_client import (
 from gamr_backend_api_service.ml_service_client.hugging_face.hf_client import (
     HuggingFaceClient,
 )
-from gamr_backend_api_service.models import FlowerPayload, ImagePayload, User
-from gamr_backend_api_service.models.mlflow.payload import Models, Versions
+from gamr_backend_api_service.models.hugging_face import ImagePayload
+from gamr_backend_api_service.models.mlflow import FlowerPayload, Models, Versions
+from gamr_backend_api_service.models.user import User
 from gamr_backend_api_service.services import UserManager
 
 router = APIRouter()
@@ -71,7 +72,6 @@ async def models(
     user_manager = UserManager()
     user_manager.validate_user_exists(current_user)
     model_interface = FlowerClassifier()
-
     return model_interface.get_models()
 
 
