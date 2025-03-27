@@ -1,17 +1,8 @@
-from gamr_backend_api_service.auth.exceptions import (
-    TokenNotDecoded,
-    UserNotExists,
-)
-from gamr_backend_api_service.ml_service_client import HuggingFaceException
+from .base import router as home_router
+from .exception_handlers import ERROR_TO_HANDLER_MAPPING
+from .flower import router as flower_router
+from .object import router as object_router
 
-from .exception_handlers import (
-    hugging_face_api_exception_handler,
-    token_not_decoded_exception_handler,
-    user_not_exists_exception_handler,
-)
+ROUTERS = [home_router, flower_router, object_router]
 
-ERROR_TO_HANDLER_MAPPING = [
-    [UserNotExists, user_not_exists_exception_handler],
-    [TokenNotDecoded, token_not_decoded_exception_handler],
-    [HuggingFaceException, hugging_face_api_exception_handler],
-]
+__all__ = ["ERROR_TO_HANDLER_MAPPING", "ROUTERS"]

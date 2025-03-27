@@ -4,13 +4,14 @@ import requests
 
 from gamr_backend_api_service.ml_service_client import AbstractMLServiceClient
 from gamr_backend_api_service.models.mlflow import FlowerPayload, Models, Versions
+from gamr_backend_api_service.settings import Settings
 
 from .errors import MLFlowException
 
 
 @dataclass
 class FlowerClassifier(AbstractMLServiceClient):
-    model_api_url: str = "http://localhost:8084"
+    model_api_url: str = Settings.FLOWER_API_BASE_URL
 
     def predict(self, payload: FlowerPayload) -> FlowerPayload:
         try:
@@ -36,7 +37,7 @@ class FlowerClassifier(AbstractMLServiceClient):
 
     def get_models(self) -> Models:
         try:
-            url = f"{self.model_api_url}/models"
+            url = f"{self.model_api_url}/model"
             response = requests.get(url)
             return Models(**response.json())
 
@@ -45,7 +46,7 @@ class FlowerClassifier(AbstractMLServiceClient):
 
     def get_model_versions(self, model_name: str) -> Versions:
         try:
-            url = f"{self.model_api_url}/models/{model_name}/versions"
+            url = f"{self.model_api_url}/model/{model_name}/versions"
             response = requests.get(url)
             return Versions(**response.json())
 

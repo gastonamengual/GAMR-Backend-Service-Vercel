@@ -22,5 +22,7 @@ class Settings_(BaseSettings):
     JWT_KEY: str = Field(default="")
     JWT_ALGORITHM: str = Field(default="")
 
+    FLOWER_API_BASE_URL: str = Field(default="")
+
 
 Settings = Settings_()
