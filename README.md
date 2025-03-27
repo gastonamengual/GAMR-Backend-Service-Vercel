@@ -1,45 +1,36 @@
-# Image-Recognition-App
+# GAMR MLOps Project
 
-This app is an example of a pure MLOps probelm solving. The purpose of the app is to input an image and via a MobileNet predict the objects in it. Originally it consisted on two separate components:
-* A standalone Python package with the OpenCV model.
-* A server side API developed with FastAPI that consumes de model package, deployed in Vercel
-* A dummy client side developed with HTML, CSS and Javascript deployed in GitHub Pages.
+This repo is part of the GAMR MLOps project, designed to showcase a flexible and scalable MLOps architecture. By integrating multiple clients and model registries, it simulates real-world industry scenarios where different components need to work together seamlessly. The goal is to demonstrate how a well-structured, decoupled system can make AI deployments more efficient, adaptable, and easy to maintain.
 
-However, Vercel supports until 250MB of app size, and the model package, which uses OpenCV and another ML libraries, exceeded that number. Then, another solution had to be found. The model package was transformed into another API developed in Gradio and hosted in the free service Hugging Face. Then, the first API now consumes from this second API. Moreover, the image sending handling had to be changed, consisting in several transformations between lists, JSON strings and byte objects.
+# Backend API Service
 
-The resulting architecture is as follows:
-1. A dummy client side developed with HTML, CSS and Javascript deployed in GitHub Pages that calls API_1.
-2. An API_1 developed with FastAPI hosted in Vercel that calls API_2.
-3. An API_2 that hosts the model, developed with Gradio and hosted in Hugging Face.
-4. A Python package with the model, unused and replaced by API_2 because of hardware limitations.
+This repository contains the backend API service of the project. Built with FastAPI, it handles request validation, authentication, and communication between the client application and the model registries. The API supports both image classification and iris flower recognition by interacting with dedicated model registries.
 
-API_1 supports automated CI/CD in GitHub Actions. Building includes installing of dependencies,  testing in Pytest, formatting with black and linter. Deployment includes both GitHub Pages and Vercel.
+## Architecture Overview
+The client is part of a layered MLOps architecture:
+- **Client:** Streamlit-based UI for user interaction.
+- **Backend:** FastAPI service handling request validation and authentication, hosted both in Render as a Docker Image and on Vercel.
+- **Model Registry:**
+  - Hugging Face model for image classification.
+  - MLFlow model hosted on Render in a Docker container for iris classification.
 
-The model Python package supports automated CI/CD in GitHub Actions. Building inludes installing of dependencies, testing in Pytest, formatting with black and linter and package building with setuptools. Deployment includes publishing to PyPI with Twine.
+## Usage
 
-#### FULL TECHNOLOGIES STACK
+1. Open the app in [https://gamr-image-recognition.streamlit.app](https://gamr-image-recognition.streamlit.app).
 
-[API]
-* FastAPI
-* Uvicorn
-* Gradio
+2. Chose either object detection or flower classification.
 
-[Machine Learning]
-* Numpy
-* matplotlib
-* Pillow
-* OpenCV
+3. View predictions and results in real-time.
 
-[Services]
-* GitHub Actions
-* Vercel
-* Hugging Face
-* PyPI
+- **For image classification:** Upload an image, and the model will return the predicted class.
+- **For iris classification:** Input sepal/petal measurements, and the model will predict the iris species.
 
-[Testing, formatting and building]
-* Pytest
-* Flake8
-* Black
-* Pre-commit
-* setuptools
-* Twine
+
+## WIP and Future Enhancements
+- 100% test coverage.
+- Enhanced authentication and security features.
+- Optimized API performance and logging.
+
+---
+
+Feel free to suggest improvements!

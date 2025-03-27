@@ -29,3 +29,10 @@ def hugging_face_api_exception_handler(
     exc: HuggingFaceException,
 ) -> JSONResponse:
     return JSONResponse(status_code=exc.status_code, content={"message": exc.message})
+
+
+ERROR_TO_HANDLER_MAPPING = [
+    [UserNotExists, user_not_exists_exception_handler],
+    [TokenNotDecoded, token_not_decoded_exception_handler],
+    [HuggingFaceException, hugging_face_api_exception_handler],
+]
