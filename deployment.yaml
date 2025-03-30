@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-service-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-service-api
+  template:
+    metadata:
+      labels:
+        app: backend-service-api
+    spec:
+      containers:
+        - name: backend-service-api
+          image: gastonamengual/backend-service-api:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: backend-service-api-secrets
+          env:
+            - name: FLOWER_API_BASE_URL
+              value: "http://flower_model_service:5001"
+            - name: DB_PORT
+              value: "5432"
