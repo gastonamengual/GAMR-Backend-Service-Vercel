@@ -12,6 +12,7 @@ python-multipart = "==0.0.18"
 pyjwt = "==2.10.1"
 firebase-admin = "==6.6.0"
 pydantic_settings = "*"
+prometheus-client = "==0.21.1"
 
 [dev-packages]
 pytest = "==8.3.4"
