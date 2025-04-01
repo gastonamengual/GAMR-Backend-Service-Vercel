@@ -3,32 +3,30 @@ from dataclasses import dataclass, field
 
 from prometheus_client import Counter, Gauge, Histogram, generate_latest
 
+from .abstract import AbstractMonitor
+
 
 @dataclass
-class PrometheusMonitor:
-    requests_total: Counter = field(init=False)
+class PrometheusMonitor(AbstractMonitor):
+    num_requests: Counter = field(init=False)
     request_duration_seconds: Histogram = field(init=False)
-    memory_usage_bytes: Gauge = field(init=False)
-    cpu_usage_seconds: Counter = field(init=False)
+    current_requests: Gauge = field(init=False)
 
     def __post_init__(self) -> None:
-        self.requests_total = Counter(
-            "requests_total",
+        self.num_requests = Counter(
+            "backend_service_num_requests",
             "Total number of requests",
-            labelnames=["method", "endpoint"],
+            labelnames=["endpoint"],
         )
         self.request_duration_seconds = Histogram(
-            "request_duration_seconds",
+            "backend_service_request_duration_seconds",
             "Histogram of request duration in seconds",
             labelnames=["endpoint"],
         )
-
-        self.memory_usage_bytes = Gauge(
-            "memory_usage_bytes", "Memory usage of the service in bytes"
-        )
-
-        self.cpu_usage_seconds = Counter(
-            "cpu_usage_seconds_total", "Total CPU usage time in seconds"
+        self.current_requests = Gauge(
+            "backend_service_current_requests",
+            "Current number of requests",
+            labelnames=["endpoint"],
         )
 
     def start_time(self) -> float:
@@ -37,18 +35,21 @@ class PrometheusMonitor:
     def get_duration(self, start_time: float) -> float:
         return time.time() - start_time
 
-    def observe_request(self, method: str, endpoint: str, duration: float) -> None:
-        self.requests_total.labels(method=method, endpoint=endpoint).inc()
+    def increase_num_requests(self, endpoint: str) -> None:
+        self.num_requests.labels(endpoint=endpoint).inc()
+
+    def record_request_duration(self, start_time: float, endpoint: str) -> None:
+        duration = self.get_duration(start_time)
         self.request_duration_seconds.labels(endpoint=endpoint).observe(duration)
 
-    def update_memory_usage(self, memory_usage: float) -> None:
-        self.memory_usage_bytes.set(memory_usage)
+    def increase_current_requests(self, endpoint: str) -> None:
+        self.current_requests.labels(endpoint=endpoint).inc()
 
-    def update_cpu_usage(self, cpu_usage: float) -> None:
-        self.cpu_usage_seconds.inc(cpu_usage)
+    def decrease_current_requests(self, endpoint: str) -> None:
+        self.current_requests.labels(endpoint=endpoint).dec()
 
     def collect_metrics(self) -> bytes:
         return generate_latest()  # type: ignore
 
 
-PROMETHEYS_MONITOR = PrometheusMonitor()
+PROMETHEUS_MONITOR = PrometheusMonitor()

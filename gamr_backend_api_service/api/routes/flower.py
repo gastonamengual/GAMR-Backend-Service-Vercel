@@ -8,6 +8,7 @@ from gamr_backend_api_service.ml_service_client import (
 )
 from gamr_backend_api_service.models.mlflow import FlowerPayload, Models, Versions
 from gamr_backend_api_service.models.user import User
+from gamr_backend_api_service.monitoring import PROMETHEUS_MONITOR
 from gamr_backend_api_service.services import UserManager
 
 router = APIRouter(prefix="/flower")
@@ -21,7 +22,16 @@ async def predict_flower(
 ) -> FlowerPayload:
     user_manager = UserManager()
     user_manager.validate_user_exists(current_user)
-    return flower_classifier.predict(payload)
+
+    start_time = PROMETHEUS_MONITOR.start_time()
+    PROMETHEUS_MONITOR.increase_current_requests("/flower/classify/")
+
+    result = flower_classifier.predict(payload)
+
+    PROMETHEUS_MONITOR.record_request_duration(start_time, "/flower/classify/")
+    PROMETHEUS_MONITOR.decrease_current_requests("/flower/classify/")
+
+    return result
 
 
 @router.post("/train")
@@ -33,7 +43,15 @@ async def train_flower(
     user_manager.validate_user_exists(current_user)
     model_interface = FlowerClassifier()
 
-    return model_interface.train(payload)
+    start_time = PROMETHEUS_MONITOR.start_time()
+    PROMETHEUS_MONITOR.increase_current_requests("/flower/train/")
+
+    result = model_interface.train(payload)
+
+    PROMETHEUS_MONITOR.record_request_duration(start_time, "/flower/train/")
+    PROMETHEUS_MONITOR.decrease_current_requests("/flower/train/")
+
+    return result
 
 
 @router.get("/classifiers")
@@ -43,7 +61,16 @@ async def models(
     user_manager = UserManager()
     user_manager.validate_user_exists(current_user)
     model_interface = FlowerClassifier()
-    return model_interface.get_models()
+
+    start_time = PROMETHEUS_MONITOR.start_time()
+    PROMETHEUS_MONITOR.increase_current_requests("/flower/classifiers/")
+
+    result = model_interface.get_models()
+
+    PROMETHEUS_MONITOR.record_request_duration(start_time, "/flower/classifiers/")
+    PROMETHEUS_MONITOR.decrease_current_requests("/flower/classifiers/")
+
+    return result
 
 
 @router.get("/{classifier}/versions")
@@ -55,4 +82,12 @@ async def model_versions(
     user_manager.validate_user_exists(current_user)
     model_interface = FlowerClassifier()
 
-    return model_interface.get_model_versions(model_name=classifier)
+    start_time = PROMETHEUS_MONITOR.start_time()
+    PROMETHEUS_MONITOR.increase_current_requests("/classifier/versions/")
+
+    result = model_interface.get_model_versions(model_name=classifier)
+
+    PROMETHEUS_MONITOR.record_request_duration(start_time, "/classifier/versions/")
+    PROMETHEUS_MONITOR.decrease_current_requests("/classifier/versions/")
+
+    return result
